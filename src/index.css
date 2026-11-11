@@ -1,0 +1,239 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Sepia: HeroUI's light theme with warm paper colors. */
+html.sepia {
+  --background: #f3ead3;
+  --foreground: #4a3b28;
+  --surface: #faf3e1;
+  --surface-secondary: #efe4c8;
+  --surface-tertiary: #e8dbbb;
+  --overlay: #faf3e1;
+  --muted: #8a7558;
+  --default: #ebdfc2;
+  --default-foreground: #4a3b28;
+  --border: #dccdaa;
+  --separator: #e2d4b3;
+  --field-background: #fffaf0;
+  --accent: #9a5b13;
+  --accent-foreground: #fffaf0;
+}
+
+/* ---- Reader chrome ------------------------------------------------------------------------ */
+
+.reader-root {
+  background: var(--background);
+}
+.reader-root.theme-light {
+  background: #e9e9ec;
+}
+.reader-root.theme-light .foliate-host,
+.reader-root.theme-light .comic-view {
+  background: #fff;
+}
+
+.reader-bar {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-color: var(--separator);
+}
+header.reader-bar {
+  border-bottom: 1px solid var(--separator);
+  min-height: 48px;
+}
+footer.reader-bar {
+  border-top: 1px solid var(--separator);
+}
+
+.reader-progress {
+  accent-color: var(--accent);
+  height: 28px;
+}
+
+/* ---- PDF pages ---------------------------------------------------------------------------- */
+
+.pdf-page {
+  --scale-round-x: 1px;
+  --scale-round-y: 1px;
+  position: relative;
+  margin: 0 auto 12px;
+  background: white;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  touch-action: manipulation;
+}
+
+.pdf-layer-host,
+.pdf-layer-host canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dark .pdf-page {
+  background: #18181b;
+}
+.dark .pdf-layer-host canvas,
+.dark .comic-view img.invert-in-dark {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+.sepia .pdf-layer-host canvas {
+  filter: sepia(0.35) brightness(0.97);
+}
+
+/* Minimal copy of pdf.js text layer rules (web/pdf_viewer.css). */
+.textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  line-height: 1;
+  text-align: initial;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-size-adjust: none;
+  transform-origin: 0 0;
+  z-index: 2;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+
+.textLayer :is(span, br) {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: pointer;
+  transform-origin: 0% 0%;
+  user-select: text;
+}
+
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent) {
+  --font-height: 0;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+
+.textLayer .markedContent {
+  display: contents;
+}
+
+.textLayer ::selection,
+.ocr-layer ::selection {
+  background: color-mix(in srgb, AccentColor, transparent 60%);
+  color: transparent;
+}
+
+.textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  user-select: none;
+}
+
+/* Highlights drawn under the text layer. */
+.pdf-highlights {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+.dark .pdf-highlights {
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+.pdf-highlights .hl {
+  position: absolute;
+  border-radius: 2px;
+}
+.hl-yellow {
+  background: rgb(250 204 21 / 0.45);
+}
+.hl-green {
+  background: rgb(74 222 128 / 0.45);
+}
+.hl-blue {
+  background: rgb(96 165 250 / 0.45);
+}
+.hl-pink {
+  background: rgb(244 114 182 / 0.45);
+}
+
+/* ---- OCR text over scanned pages and comics ----------------------------------------------- */
+
+.ocr-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  line-height: 1;
+  overflow: clip;
+  font-family: sans-serif;
+  /* Only the words take taps; the empty layer must not cover a PDF's real text layer. */
+  pointer-events: none;
+}
+.ocr-layer .ocr-bubble {
+  display: contents;
+}
+.ocr-layer span {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  transform-origin: 0 0;
+  cursor: pointer;
+  user-select: text;
+  pointer-events: auto;
+}
+.ocr-layer br {
+  display: none;
+}
+
+/* ---- Saved words (CSS Custom Highlight API) ------------------------------------------------- */
+
+::highlight(tapreader-saved) {
+  text-decoration: underline dotted 2px;
+  text-decoration-color: #3b82f6;
+  text-underline-offset: 3px;
+}
+
+/* ---- Tapped word -------------------------------------------------------------------------- */
+
+.word-mark {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: 1.5px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  z-index: 40;
+}
+
+.word-mark.is-loading {
+  animation: word-mark-pulse 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes word-mark-pulse {
+  from {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  to {
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+}

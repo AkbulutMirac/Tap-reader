@@ -1,0 +1,10 @@
+node_modules
+dist
+dev-dist
+*.local
+public/vendor
+.DS_Store
+data/
+test-files/
+.wrangler/
+*.tsbuildinfo
