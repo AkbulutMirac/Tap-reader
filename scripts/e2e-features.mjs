@@ -1,4 +1,4 @@
-// Feature test in headless Edge: web article import, contents/search/display panels, dark theme,
+// Feature test in headless Edge: contents/search/display panels, dark theme,
 // highlights, bookmarks, flashcard review and backup export.
 // Usage: node scripts/e2e-features.mjs [baseUrl] [screenshotDir] [--tablet]
 import { chromium } from "playwright-core";
@@ -37,28 +37,6 @@ async function openFile(name) {
   await page.goto(`${base}/#/`);
   await page.locator('input[type="file"][accept*=".pdf"]').setInputFiles(files + name);
   await page.waitForURL(/#\/read\//, { timeout: 10000 });
-}
-
-// ---- Web article ------------------------------------------------------------------------------
-await page.goto(base);
-await page.getByRole("button", { name: /Web article/ }).first().click();
-await page.getByRole("textbox").fill("https://en.wikipedia.org/wiki/Lighthouse");
-await page.getByRole("button", { name: "Open", exact: true }).click();
-try {
-  await page.waitForURL(/#\/read\//, { timeout: 30000 });
-  let hasText = false;
-  for (let i = 0; i < 30 && !hasText; i++) {
-    await page.waitForTimeout(500);
-    for (const f of page.frames()) {
-      if (f === page.mainFrame()) continue;
-      if (await f.evaluate(() => /lighthouse/i.test(document.body?.innerText ?? "")).catch(() => false)) hasText = true;
-    }
-  }
-  check(hasText, "web article imported and shown");
-  await shot("article");
-} catch {
-  const msg = await page.locator(".text-danger").first().innerText().catch(() => "");
-  check(false, "web article imported and shown", msg);
 }
 
 // ---- E-book panels ---------------------------------------------------------------------------

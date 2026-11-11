@@ -3,7 +3,6 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
-import { handleFetch } from "./functions/api/fetch.ts";
 
 /**
  * Content-Security-Policy. Besides normal hardening it blocks scripts inside e-books:
@@ -31,23 +30,6 @@ const SECURITY_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 };
-
-/** Serves the Cloudflare Pages Function /api/fetch during `vite dev` and `vite preview`. */
-function apiFetchDev(): Plugin {
-  const middleware = async (req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse) => {
-    const headers = new Headers();
-    for (const [k, v] of Object.entries(req.headers)) if (typeof v === "string") headers.set(k, v);
-    const response = await handleFetch(new Request(`http://localhost${req.originalUrl ?? req.url}`, { headers }));
-    res.statusCode = response.status;
-    response.headers.forEach((v, k) => res.setHeader(k, v));
-    res.end(Buffer.from(await response.arrayBuffer()));
-  };
-  return {
-    name: "api-fetch-dev",
-    configureServer: (server) => void server.middlewares.use("/api/fetch", middleware),
-    configurePreviewServer: (server) => void server.middlewares.use("/api/fetch", middleware),
-  };
-}
 
 /** Writes Cloudflare Pages' `_headers` file (security headers + caching) into the build. */
 function cloudflareHeaders(): Plugin {
@@ -91,7 +73,6 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    apiFetchDev(),
     cloudflareHeaders(),
     VitePWA({
       registerType: "autoUpdate",
@@ -120,7 +101,6 @@ export default defineConfig({
         globIgnores: ["vendor/**", "dict/**", "samples/**", "icons/maskable-512.png"],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         navigateFallback: "index.html",
-        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.includes("/dict/"),

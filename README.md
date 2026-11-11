@@ -1,6 +1,6 @@
 # TapReader
 
-Read PDFs, e-books, documents, web articles and comics. **Tap any English word** and a small popup shows its
+Read PDFs, e-books, documents and comics. **Tap any English word** and a small popup shows its
 Turkish meaning (other target languages work online), an English definition with an example, and a ☆ Save button
 for your word list.
 
@@ -17,7 +17,7 @@ Installable web app (PWA) for phone, tablet and PC. Works offline. Your files an
 ## Features
 
 - **Formats:** PDF (incl. scanned), EPUB, MOBI, AZW3, FB2, DOCX, ODT, RTF, TXT, Markdown, HTML, CBZ/CBR/CB7 comics,
-  images, web articles (paste a link).
+  images.
 - **Translation:** built-in EN→TR dictionary (≈40,000 words, works offline; base forms like *went → go*), online
   fallback (Google Translate / MyMemory) and a "More meanings" button. Select several words → translate the phrase.
 - **OCR:** scanned PDF pages, photos and comic speech bubbles are read on first tap (Tesseract.js, on-device).
@@ -29,7 +29,7 @@ Installable web app (PWA) for phone, tablet and PC. Works offline. Your files an
 ## How to use
 
 1. **Open something to read.** In **Library**, press **Open a file** / **Add file**, or drop a file anywhere on the
-   page. For a web page, press **Web article** and paste the link. Not sure yet? Press **Try a sample**.
+   page. Not sure yet? Press **Try a sample**.
 2. **Tap a word you don't know.** A popup shows the Turkish meaning, an English definition and an example.
    Press **More meanings (online)** for more translations.
 3. **Save it.** Press **☆ Save** in the popup. The word goes to your word list together with its sentence, and it is
@@ -64,7 +64,7 @@ Open http://localhost:5173. To try it on a tablet/phone on the same Wi-Fi: `npm 
 
 ```
 src/                 the app (React + TypeScript)
-  library/           library screen, opening files and web articles
+  library/           library screen and opening files
   reader/            reader screen and one engine per format
     pdf/             PDF (PDF.js)
     foliate/         EPUB, MOBI, AZW3, FB2, DOCX, TXT, Markdown, HTML (foliate-js)
@@ -78,7 +78,6 @@ public/
   dict/              built-in EN→TR dictionary (generated, see below)
   icons/             app icons
   samples/           sample PDF for "Try a sample"
-functions/api/       fetch.ts: server function that downloads web pages for "Web article"
 scripts/             dev tools: tests, sample files, icons, dictionary builder
 docs/screenshots/    images used in this README
 ```
@@ -111,8 +110,7 @@ npx wrangler login   # once
 npm run deploy
 ```
 
-`functions/api/fetch.ts` runs as a Pages Function; it fetches web pages for the "Web article" feature.
-`dist/_headers` sets a strict Content-Security-Policy, which also blocks scripts inside e-books.
+The app is a static site; no server code is needed. `dist/_headers` sets a strict Content-Security-Policy, which also blocks scripts inside e-books.
 
 ## Credits & licenses
 
@@ -121,5 +119,5 @@ npm run deploy
 - The generated dictionary in `public/dict/` is CC BY-SA 3.0 and includes the WordNet notice; see
   [public/dict/LICENSE.txt](public/dict/LICENSE.txt)
 - PDF.js (Apache-2.0), foliate-js (MIT), Tesseract.js (Apache-2.0), libarchive.js (MIT), HeroUI (MIT),
-  mammoth (BSD-2), marked (MIT), DOMPurify (Apache-2.0/MPL-2.0), Readability (Apache-2.0)
+  mammoth (BSD-2), marked (MIT), DOMPurify (Apache-2.0/MPL-2.0)
 - Sample text: *Alice's Adventures in Wonderland*, Lewis Carroll (public domain)

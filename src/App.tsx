@@ -1,6 +1,6 @@
 import { Button, Spinner, Toast, toast } from "@heroui/react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef } from "react";
 import { db } from "./db";
 import { ACCEPT, addBook, UnsupportedFileError } from "./library/books";
 import LibraryScreen from "./library/LibraryScreen";
@@ -11,7 +11,6 @@ import { IconLibrary, IconSettings, IconWords } from "./ui/icons";
 const ReaderScreen = lazy(() => import("./reader/ReaderScreen"));
 const WordsScreen = lazy(() => import("./words/WordsScreen"));
 const SettingsScreen = lazy(() => import("./SettingsScreen"));
-const ArticleDialog = lazy(() => import("./library/ArticleDialog"));
 
 const Loading = () => (
   <div className="flex h-full items-center justify-center">
@@ -23,7 +22,6 @@ export default function App() {
   useApplyTheme();
   const route = useRoute();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [articleOpen, setArticleOpen] = useState(false);
   const due = useLiveQuery(() => db.words.where("dueAt").belowOrEqual(Date.now()).count(), []) ?? 0;
 
   const openFiles = useCallback(async (files: FileList | File[] | null | undefined) => {
@@ -107,22 +105,13 @@ export default function App() {
           <main className="min-h-0 flex-1">
             <Suspense fallback={<Loading />}>
               {route.name === "library" && (
-                <LibraryScreen
-                  onOpenFile={() => inputRef.current?.click()}
-                  onOpenSample={openSample}
-                  onOpenUrl={() => setArticleOpen(true)}
-                />
+                <LibraryScreen onOpenFile={() => inputRef.current?.click()} onOpenSample={openSample} />
               )}
               {route.name === "words" && <WordsScreen />}
               {route.name === "settings" && <SettingsScreen />}
             </Suspense>
           </main>
         </div>
-      )}
-      {articleOpen && (
-        <Suspense fallback={null}>
-          <ArticleDialog onClose={() => setArticleOpen(false)} />
-        </Suspense>
       )}
     </>
   );

@@ -23,7 +23,6 @@
   "dependencies": {
     "@heroui/react": "^3.2.6",
     "@heroui/styles": "^3.2.6",
-    "@mozilla/readability": "^0.6.0",
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
     "dompurify": "^3.4.16",

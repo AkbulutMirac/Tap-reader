@@ -1,4 +1,4 @@
-# Cloudflare Pages (static site + functions/api/fetch.ts for web articles).
+# Cloudflare Pages (static site).
 # Deploy: npm run deploy   (first time: npx wrangler login)
 name = "tapreader"
 pages_build_output_dir = "dist"

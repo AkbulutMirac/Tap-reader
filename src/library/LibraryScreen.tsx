@@ -2,19 +2,18 @@ import { Button, Card, toast } from "@heroui/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, type Book } from "../db";
 import { navigate } from "../router";
-import { IconLink, IconPlus, IconTrash } from "../ui/icons";
+import { IconPlus, IconTrash } from "../ui/icons";
 import { deleteBook, extensionOf } from "./books";
 
 interface LibraryScreenProps {
   onOpenFile: () => void;
   onOpenSample: () => void;
-  onOpenUrl: () => void;
 }
 
 const formatLabel = (book: Book) =>
   book.format === "article" ? "Web article" : extensionOf(book.fileName).toUpperCase() || "File";
 
-export default function LibraryScreen({ onOpenFile, onOpenSample, onOpenUrl }: LibraryScreenProps) {
+export default function LibraryScreen({ onOpenFile, onOpenSample }: LibraryScreenProps) {
   const books = useLiveQuery(() => db.books.orderBy("openedAt").reverse().toArray(), []);
 
   if (books && books.length === 0) {
@@ -22,15 +21,12 @@ export default function LibraryScreen({ onOpenFile, onOpenSample, onOpenUrl }: L
       <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
         <div className="text-2xl font-semibold">Tap any word to translate it</div>
         <p className="max-w-sm text-muted">
-          Open an English PDF, e-book, document, comic or web page, then tap a word you don't know. A small popup shows
-          its Turkish meaning.
+          Open an English PDF, e-book, document or comic, then tap a word you don't know. A small popup shows its
+          Turkish meaning.
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           <Button onPress={onOpenFile}>
             <IconPlus size={18} /> Open a file
-          </Button>
-          <Button variant="secondary" onPress={onOpenUrl}>
-            <IconLink size={18} /> Web article
           </Button>
           <Button variant="secondary" onPress={onOpenSample}>
             Try a sample
@@ -49,9 +45,6 @@ export default function LibraryScreen({ onOpenFile, onOpenSample, onOpenUrl }: L
     <div className="mx-auto h-full max-w-5xl overflow-y-auto px-4 py-4">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="mr-auto text-xl font-semibold">Library</h1>
-        <Button size="sm" variant="secondary" onPress={onOpenUrl}>
-          <IconLink size={16} /> Web article
-        </Button>
         <Button size="sm" onPress={onOpenFile}>
           <IconPlus size={16} /> Add file
         </Button>
