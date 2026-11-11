@@ -69,9 +69,9 @@ npm run e2e              # end-to-end in headless Microsoft Edge (dev server mus
 node scripts/e2e-offline.mjs http://localhost:4173   # offline test against `npx vite preview`
 ```
 
-## Dictionary
+## Rebuilding the dictionary (optional)
 
-`public/dict/` is generated and committed. To rebuild it:
+Not needed to run the app — `public/dict/` is already included. Only if you want to change the dictionary:
 
 ```bash
 npm run dict:data   # downloads WikDict en-tr, WordNet 3.1, a word-frequency list into data/
