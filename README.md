@@ -7,11 +7,11 @@ for your word list.
 Installable web app (PWA) for phone, tablet and PC. Works offline. Your files and words stay on your device.
 
 <p>
-  <img src="docs/screenshots/reader-desktop.png" alt="Tapping a word in a PDF shows its Turkish meaning and English definition" width="620">
-  <img src="docs/screenshots/reader-phone.png" alt="The same popup on a phone in dark mode" width="200">
+  <img src="docs/screenshots/reader-desktop.png" alt="Tapping a word in a PDF shows its Turkish meaning and English definition" width="820">
 </p>
 <p>
-  <img src="docs/screenshots/words.png" alt="Word list with saved words and the sentences they came from" width="620">
+  <img src="docs/screenshots/reader-phone.png" alt="Tapping a word in an e-book on a phone, dark mode" width="300">
+  <img src="docs/screenshots/words.png" alt="Word list with saved words and the sentences they came from" width="510">
 </p>
 
 ## Features
