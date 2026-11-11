@@ -60,6 +60,32 @@ npm run dev
 Open http://localhost:5173. To try it on a tablet/phone on the same Wi-Fi: `npm run dev -- --host`
 (installing as an app needs HTTPS, i.e. the deployed version).
 
+## Project structure
+
+```
+src/                 the app (React + TypeScript)
+  library/           library screen, opening files and web articles
+  reader/            reader screen and one engine per format
+    pdf/             PDF (PDF.js)
+    foliate/         EPUB, MOBI, AZW3, FB2, DOCX, TXT, Markdown, HTML (foliate-js)
+    comic/           CBZ / CBR / CB7 comics and images
+  tap/               finding the tapped word and the translation popup
+  translate/         offline dictionary lookup, base forms, online fallback
+  ocr/               reading words from scanned pages and comic bubbles (Tesseract.js)
+  words/             word list, flashcards, backup / import / CSV
+  ui/                shared small components and icons
+public/
+  dict/              built-in EN→TR dictionary (generated, see below)
+  icons/             app icons
+  samples/           sample PDF for "Try a sample"
+functions/api/       fetch.ts: server function that downloads web pages for "Web article"
+scripts/             dev tools: tests, sample files, icons, dictionary builder
+docs/screenshots/    images used in this README
+```
+
+The files in the root folder (`package.json`, `vite.config.ts`, `tsconfig.json`, `index.html`, `wrangler.toml`,
+dotfiles) are config files that the build tools expect in the root.
+
 ## Tests
 
 ```bash

@@ -8,3 +8,4 @@ data/
 test-files/
 .wrangler/
 *.tsbuildinfo
+.claude/
